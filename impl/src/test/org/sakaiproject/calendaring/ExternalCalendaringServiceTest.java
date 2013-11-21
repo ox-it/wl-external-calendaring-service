@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sakaiproject.calendar.api.CalendarEvent;
 import org.sakaiproject.calendar.api.CalendarEventEdit;
-import org.sakaiproject.calendaring.api.ExternalCalendaringService;
+import org.sakaiproject.calendaring.api.*;
 import org.sakaiproject.calendaring.mocks.MockCalendarEventEdit;
 import org.sakaiproject.calendaring.mocks.MockTimeService;
 import org.sakaiproject.time.api.Time;
@@ -101,13 +101,13 @@ public class ExternalCalendaringServiceTest {
 		CalendarEvent event = generateEvent();
 		
 		//create vevent
-		net.fortuna.ical4j.model.component.VEvent vevent = service.createEvent(event);
+		ExtEvent extEvent = service.createEvent(event);
 		
 		System.out.println("testGeneratingVEvent");
 		System.out.println("####################");
-		System.out.println(vevent);
+		System.out.println(extEvent);
 		
-		Assert.assertNotNull(vevent);
+		Assert.assertNotNull(extEvent);
 		
 		//TODO check the attributes of the vevent
 		//Assert.assertEquals(EVENT_NAME, vevent.getProperty("SUMMARY"));
@@ -125,16 +125,16 @@ public class ExternalCalendaringServiceTest {
 		event.setField("vevent_uuid", "XXX");
 		
 		//create vevent
-		net.fortuna.ical4j.model.component.VEvent vevent = service.createEvent(event);
+		ExtEvent extEvent = service.createEvent(event);
 		
 		System.out.println("testGeneratingVEventWithOverridenUuid");
 		System.out.println("#####################################");
-		System.out.println(vevent);
+		System.out.println(extEvent);
 		
-		Assert.assertNotNull(vevent);
+		Assert.assertNotNull(extEvent);
 		
 		//should be equal to show it has been overriden
-		Assert.assertEquals("XXX", vevent.getUid().getValue());
+		Assert.assertEquals("XXX", ((ExtEventImpl) extEvent).getvEvent().getUid().getValue());
 		
 		
 		//TODO check the attributes of the vevent
@@ -150,13 +150,13 @@ public class ExternalCalendaringServiceTest {
 		CalendarEvent event = generateEvent();
 		
 		//create vevent
-		net.fortuna.ical4j.model.component.VEvent vevent = service.createEvent(event, users);
+		ExtEvent extEvent = service.createEvent(event, users);
 		
 		System.out.println("testGeneratingVEventWithAttendees");
 		System.out.println("#################################");
-		System.out.println(vevent);
+		System.out.println(extEvent);
 		
-		Assert.assertNotNull(vevent);
+		Assert.assertNotNull(extEvent);
 		
 		//TODO check the attributes of the vevent
 		//Assert.assertEquals(EVENT_NAME, vevent.getProperty("SUMMARY"));
@@ -173,18 +173,18 @@ public class ExternalCalendaringServiceTest {
 		CalendarEvent event = generateEvent();
 		
 		//create vevent
-		net.fortuna.ical4j.model.component.VEvent vevent = service.createEvent(event);
+		ExtEvent extEvent = service.createEvent(event);
 		
 		System.out.println("testUpdatingVEventWithAttendees");
 		System.out.println("#################################");
 		System.out.println("Before:");
-		System.out.println(vevent);
+		System.out.println(extEvent);
 		
-		net.fortuna.ical4j.model.component.VEvent veventUpdated = service.addAttendeesToEvent(vevent, users);
+		ExtEvent extEventUpdated = service.addAttendeesToEvent(extEvent, users);
 		System.out.println("After:");
-		System.out.println(vevent);
+		System.out.println(extEventUpdated);
 		
-		Assert.assertNotNull(vevent);
+		Assert.assertNotNull(extEventUpdated);
 		
 		//TODO check the attributes of the vevent
 		//Assert.assertEquals(EVENT_NAME, vevent.getProperty("SUMMARY"));
@@ -201,10 +201,10 @@ public class ExternalCalendaringServiceTest {
 		CalendarEvent event = generateEvent();
 		
 		//create vevent
-		net.fortuna.ical4j.model.component.VEvent vevent = service.createEvent(event);
+		ExtEvent extEvent= service.createEvent(event);
 		
 		//set it to cancelled
-		VEvent cancelled = service.cancelEvent(vevent);
+		ExtEvent cancelled = service.cancelEvent(extEvent);
 		
 		System.out.println("testCancellingVEvent");
 		System.out.println("####################");
@@ -228,13 +228,13 @@ public class ExternalCalendaringServiceTest {
 		event.setField("vevent_uuid", uuid);
 		
 		//create vevent
-		net.fortuna.ical4j.model.component.VEvent vevent = service.createEvent(event);
+		ExtEvent extEvent = service.createEvent(event);
 		
 		System.out.println("testCreatingVEventWithUidProperty");
 		System.out.println("####################");
-		System.out.println(vevent);
+		System.out.println(extEvent);
 		
-		Assert.assertNotNull(vevent);
+		Assert.assertNotNull(extEvent);
 		
 		//TODO check uid attribute matches what we set
 		
@@ -250,13 +250,13 @@ public class ExternalCalendaringServiceTest {
 		event.setField("vevent_url", "http://www.fake.com");
 		
 		//create vevent
-		net.fortuna.ical4j.model.component.VEvent vevent = service.createEvent(event);
+		ExtEvent extEvent = service.createEvent(event);
 		
 		System.out.println("testCreatingVEventWithUrlProperty");
 		System.out.println("####################");
-		System.out.println(vevent);
+		System.out.println(extEvent);
 		
-		Assert.assertNotNull(vevent);
+		Assert.assertNotNull(extEvent);
 		
 		//TODO check uid attribute matches what we set
 		
@@ -272,13 +272,13 @@ public class ExternalCalendaringServiceTest {
 		event.setField("vevent_sequence", sequence);
 		
 		//create vevent
-		net.fortuna.ical4j.model.component.VEvent vevent = service.createEvent(event);
+		ExtEvent extEvent = service.createEvent(event);
 		
 		System.out.println("testCreatingVEventWithSequenceProperty");
 		System.out.println("####################");
-		System.out.println(vevent);
+		System.out.println(extEvent);
 		
-		Assert.assertNotNull(vevent);
+		Assert.assertNotNull(extEvent);
 		
 		//TODO check sequence attribute matches what we set
 		
@@ -294,20 +294,20 @@ public class ExternalCalendaringServiceTest {
 		CalendarEvent event = generateEvent();
 		
 		//create vevent
-		net.fortuna.ical4j.model.component.VEvent vevent = service.createEvent(event);
+		ExtEvent extEvent = service.createEvent(event);
 		
 		//create calendar from vevent
-		net.fortuna.ical4j.model.Calendar calendar = service.createCalendar(Collections.singletonList(vevent));
+		ExtCalendar extCalendar = service.createCalendar(Collections.singletonList(extEvent));
 		
 		System.out.println("testGeneratingCalendar");
 		System.out.println("######################");
-		System.out.println(calendar);
+		System.out.println(extCalendar);
 		
-		Assert.assertNotNull(calendar);
+		Assert.assertNotNull(extCalendar);
 		
 		//check attributes of the ical4j calendar are what we expect and match those in the event
-		Assert.assertEquals(Version.VERSION_2_0, calendar.getVersion());
-		Assert.assertEquals(CalScale.GREGORIAN, calendar.getCalendarScale());
+		Assert.assertEquals(Version.VERSION_2_0, ((ExtCalendarImpl) extCalendar).getCalendar().getVersion());
+		Assert.assertEquals(CalScale.GREGORIAN, ((ExtCalendarImpl)extCalendar).getCalendar().getCalendarScale());
 		
 	}
 	
@@ -318,24 +318,24 @@ public class ExternalCalendaringServiceTest {
 	public void testGeneratingCalendarWithMultipleVEvents() {
 				
 		//create list of vevents
-		List<net.fortuna.ical4j.model.component.VEvent> vevents = new ArrayList<net.fortuna.ical4j.model.component.VEvent>();
+		List<ExtEvent>extEvents = new ArrayList<ExtEvent>();
 	
 		for(int i=0;i<10;i++) {
-			vevents.add(service.createEvent(generateEvent()));
+			extEvents.add(service.createEvent(generateEvent()));
 		}
 		
 		//create calendar from vevent
-		net.fortuna.ical4j.model.Calendar calendar = service.createCalendar(vevents);
+		ExtCalendar extCalendar = service.createCalendar(extEvents);
 		
 		System.out.println("testGeneratingCalendarWithMultipleVEvents");
 		System.out.println("#########################################");
-		System.out.println(calendar);
+		System.out.println(extCalendar);
 		
-		Assert.assertNotNull(calendar);
+		Assert.assertNotNull(extCalendar);
 		
 		//check attributes of the ical4j calendar are what we expect and match those in the event
-		Assert.assertEquals(Version.VERSION_2_0, calendar.getVersion());
-		Assert.assertEquals(CalScale.GREGORIAN, calendar.getCalendarScale());
+		Assert.assertEquals(Version.VERSION_2_0, ((ExtCalendarImpl)extCalendar).getCalendar().getVersion());
+		Assert.assertEquals(CalScale.GREGORIAN, ((ExtCalendarImpl)extCalendar).getCalendar().getCalendarScale());
 		
 		//TODO check count of vevents
 		
@@ -345,15 +345,15 @@ public class ExternalCalendaringServiceTest {
 	public void testGeneratingCalendarWithNullList() {
 		
 		//create calendar with null
-		net.fortuna.ical4j.model.Calendar calendar = service.createCalendar(null);
+		ExtCalendar extCalendar = service.createCalendar(null);
 		
 		System.out.println("testGeneratingCalendarWithNullList");
 		System.out.println("##################################");
-		System.out.println(calendar);
+		System.out.println(extCalendar);
 		System.out.println("This should be null.");		
 		
 		//should be null
-		Assert.assertNull(calendar);
+		Assert.assertNull(extCalendar);
 				
 	}
 	
@@ -361,15 +361,15 @@ public class ExternalCalendaringServiceTest {
 	public void testGeneratingCalendarWithEmptyList() {
 		
 		//create calendar with null
-		net.fortuna.ical4j.model.Calendar calendar = service.createCalendar(Collections.EMPTY_LIST);
+		ExtCalendar extCalendar = service.createCalendar(Collections.EMPTY_LIST);
 		
 		System.out.println("testGeneratingCalendarWithEmptyList");
 		System.out.println("###################################");
-		System.out.println(calendar);
+		System.out.println(extCalendar);
 		System.out.println("This should be null.");
 		
 		//should be null
-		Assert.assertNull(calendar);
+		Assert.assertNull(extCalendar);
 				
 	}
 	
@@ -381,12 +381,12 @@ public class ExternalCalendaringServiceTest {
 		CalendarEvent event = generateEvent();
 		
 		//create vevent
-		net.fortuna.ical4j.model.component.VEvent vevent = service.createEvent(event);
+		ExtEvent extEvent = service.createEvent(event);
 				
 		//create calendar from vevent
-		net.fortuna.ical4j.model.Calendar calendar = service.createCalendar(Collections.singletonList(vevent));
+		ExtCalendar extCalendar = service.createCalendar(Collections.singletonList(extEvent));
 				
-		String path = service.toFile(calendar);
+		String path = service.toFile(extCalendar);
 		
 		System.out.println("testCreatingFile");
 		System.out.println("################");
@@ -407,7 +407,7 @@ public class ExternalCalendaringServiceTest {
 		
 		System.out.println("testCreatingFileWithNullCalendar");
 		System.out.println("################################");
-		System.out.println(	path);
+		System.out.println(path);
 		System.out.println("This should be null.");
 		
 		Assert.assertNull(path);

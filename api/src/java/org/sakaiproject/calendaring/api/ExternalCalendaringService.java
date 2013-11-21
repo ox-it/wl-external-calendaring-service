@@ -2,9 +2,6 @@ package org.sakaiproject.calendaring.api;
 
 import java.util.List;
 
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.component.VEvent;
-
 import org.sakaiproject.calendar.api.CalendarEvent;
 import org.sakaiproject.user.api.User;
 
@@ -21,65 +18,65 @@ import org.sakaiproject.user.api.User;
 public interface ExternalCalendaringService {
 
 	/**
-	 * Creates an iCal VEvent for a Sakai CalendarEvent.
+	 * Creates an ExtEvent for a Sakai CalendarEvent.
 	 * This must then be turned into a Calendar before it can be turned into an ICS file.
 	 * 
-	 * <br>If the CalendarEvent has the field 'vevent_uuid', that will be used as the UUID of the VEvent preferentially.
-	 * <br>If the CalendarEvent has the field 'vevent_sequence', that will be used as the sequence of the VEvent preferentially.
-	 * <br>If the CalendarEvent has the field 'vevent_url', that will be added to the URL property of the VEvent.
+	 * <br>If the CalendarEvent has the field 'vevent_uuid', that will be used as the UUID of the ExtEvent preferentially.
+	 * <br>If the CalendarEvent has the field 'vevent_sequence', that will be used as the sequence of the ExtEvent preferentially.
+	 * <br>If the CalendarEvent has the field 'vevent_url', that will be added to the URL property of the ExtEvent.
 	 * 
 	 * @param event Sakai CalendarEvent
-	 * @return the VEvent for the given event or null if there was an error
+	 * @return the ExtEvent for the given event or null if there was an error
 	 */
-	public VEvent createEvent(CalendarEvent event);
+	public ExtEvent createEvent(CalendarEvent event);
 	
 	/**
-	 * Creates an iCal VEvent for a Sakai CalendarEvent with the given attendees.
+	 * Creates an ExtEvent for a Sakai CalendarEvent with the given attendees.
 	 * This must then be turned into a Calendar before it can be turned into an ICS file.
 	 * 
-	 * <br>If the CalendarEvent has the field 'vevent_uuid', that will be used as the UUID of the VEvent preferentially.
-	 * <br>If the CalendarEvent has the field 'vevent_sequence', that will be used as the sequence of the VEvent preferentially.
-	 * <br>If the CalendarEvent has the field 'vevent_url', that will be added to the URL property of the VEvent.
+	 * <br>If the CalendarEvent has the field 'vevent_uuid', that will be used as the UUID of the ExtEvent preferentially.
+	 * <br>If the CalendarEvent has the field 'vevent_sequence', that will be used as the sequence of the ExtEvent preferentially.
+	 * <br>If the CalendarEvent has the field 'vevent_url', that will be added to the URL property of the ExtEvent.
 	 * 
 	 * @param event Sakai CalendarEvent
 	 * @param attendees list of Users that have been invited to the event
-	 * @return the VEvent for the given event or null if there was an error
+	 * @return the ExtEvent for the given event or null if there was an error
 	 */
-	public VEvent createEvent(CalendarEvent event, List<User> attendees);
+	public ExtEvent createEvent(CalendarEvent event, List<User> attendees);
 	
 	/**
-	 * Adds a list of attendees to an existing VEvent.
+	 * Adds a list of attendees to an existing ExtEvent.
 	 * This must then be turned into a Calendar before it can be turned into an ICS file. 
 	 * 
-	 * @param vevent  The VEvent to add the attendess too
+	 * @param extEvent  The ExtEvent to add the attendess too
 	 * @param attendees list of Users that have been invited to the event
 	 * @return
 	 */
-	public VEvent addAttendeesToEvent(VEvent vevent, List<User> attendees);
+	public ExtEvent addAttendeesToEvent(ExtEvent extEvent, List<User> attendees);
 	
 	/**
-	 * Set the status of an existing VEvent to cancelled.
+	 * Set the status of an existing ExtEvent to cancelled.
 	 * This must then be turned into a Calendar before it can be turned into an ICS file.
 	 * 
-	 * @param vevent The VEvent to cancel
-	 * @return the updated VEvent
+	 * @param extEvent The ExtEvent to cancel
+	 * @return the updated ExtEvent
 	 */
-	public VEvent cancelEvent(VEvent vevent);
+	public ExtEvent cancelEvent(ExtEvent extEvent);
 	
 	/**
-	 * Creates an iCal calendar from a list of VEvents.
+	 * Creates an iCal calendar from a list of ExtEvents.
 	 * 
-	 * @param events iCal VEvents
+	 * @param events iCal ExtEvents
 	 * @return the Calendar for the given events or null if there was an error
 	 */
-	public Calendar createCalendar(List<VEvent> events);
+	public ExtCalendar createCalendar(List<ExtEvent> events);
 	
 	/**
 	 * Write an iCal calendar out to a file in the filesystem and return the path.
 	 * @param calendar iCal calendar object
 	 * @return the path to the file
 	 */
-	public String toFile(Calendar calendar);
+	public String toFile(ExtCalendar calendar);
 	
 	/**
 	 * Is the ICS service enabled? Tools can use this public method for test in their own UIs.
