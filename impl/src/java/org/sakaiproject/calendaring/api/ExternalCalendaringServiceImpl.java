@@ -15,6 +15,7 @@ import lombok.extern.apachecommons.CommonsLog;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
@@ -183,7 +184,8 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 			log.debug("ExternalCalendaringService is disabled. Enable via calendar.ics.generation.enabled=true in sakai.properties");
 			return null;
 		}
-		
+		// You can only have one status so make sure we remove any previous ones.
+		vevent.getProperties().removeAll(vevent.getProperties(Property.STATUS));
 		vevent.getProperties().add(new Status("CANCELLED"));
 		
 		if(log.isDebugEnabled()){

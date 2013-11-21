@@ -217,7 +217,35 @@ public class ExternalCalendaringServiceTest {
 		//Assert.assertEquals(LOCATION, vevent.getProperty("LOCATION"));
 		
 	}
-	
+
+	@Test
+	public void testCancellingVEventTwice() {
+
+		//generate new event
+		CalendarEvent event = generateEvent();
+
+		//create vevent
+		ExtEvent extEvent= service.createEvent(event);
+
+		//set it to cancelled
+		ExtEvent cancelled = service.cancelEvent(extEvent);
+		ExtEvent cancelledTwice = service.cancelEvent(extEvent);
+
+		System.out.println("testCancellingVEventTwice");
+		System.out.println("####################");
+		System.out.println(cancelledTwice);
+
+		Assert.assertNotNull(cancelledTwice);
+
+		ExtCalendar calendar = service.createCalendar(Collections.singletonList(cancelledTwice));
+		Assert.assertNotNull(service.toFile(calendar));
+
+		//TODO check the attributes of the vevent
+		//Assert.assertEquals(EVENT_NAME, vevent.getProperty("SUMMARY"));
+		//Assert.assertEquals(LOCATION, vevent.getProperty("LOCATION"));
+
+	}
+
 	@Test
 	public void testCreatingVEventWithUidProperty() {
 		
