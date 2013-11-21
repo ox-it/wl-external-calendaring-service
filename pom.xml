@@ -140,21 +140,23 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-	
-	<!--  this is only currently setup for snapshot releases, no stable releases -->
+
 	<distributionManagement>
-        <site>
-            <id>sakai-site</id>
-            <name>Sakai release Site</name>
-            <url>scpexe://source.sakaiproject.org/var/www/html/release/external-calendaring-service/${project.version}</url>
-        </site>
-    </distributionManagement>
-    
-     <scm>
-    	<connection>scm:svn:https://source.sakaiproject.org/contrib/external-calendaring-service/trunk</connection>
-    	<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/external-calendaring-service/trunk</developerConnection>
-    	<url>https://source.sakaiproject.org/contrib/external-calendaring-service/trunk</url>
-  	</scm>
+		<repository>
+			<id>maven-repo.oucs</id>
+			<url>http://maven-repo.oucs.ox.ac.uk/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>maven-repo.oucs</id>
+			<url>http://maven-repo.oucs.ox.ac.uk/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<scm>
+		<url>https://github.com/ox-it/wl-external-calendaring-service</url>
+		<connection>scm:git:git://github.com/ox-it/wl-external-calendaring-service.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/ox-it/wl-external-calendaring-service.git</developerConnection>
+	</scm>
     
   	<modules>
     	<module>api</module>
