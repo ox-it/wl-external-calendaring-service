@@ -24,16 +24,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.Role;
-import net.fortuna.ical4j.model.property.Attendee;
-import net.fortuna.ical4j.model.property.CalScale;
-import net.fortuna.ical4j.model.property.Description;
-import net.fortuna.ical4j.model.property.Location;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Sequence;
-import net.fortuna.ical4j.model.property.Status;
-import net.fortuna.ical4j.model.property.Uid;
-import net.fortuna.ical4j.model.property.Url;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.*;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -114,9 +105,16 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 		
 		//add organiser to event
 		if(StringUtils.isNotBlank(event.getCreator())) {
-			Attendee creator = new Attendee(URI.create("mailto:" + sakaiProxy.getUserEmail(event.getCreator())));
+			URI mailURI = URI.create("mailto:" + sakaiProxy.getUserEmail(event.getCreator()));
+			Cn commonName = new Cn(sakaiProxy.getUserDisplayName(event.getCreator()));
+
+			Organizer organizer = new Organizer(mailURI);
+			organizer.getParameters().add(commonName);
+			vevent.getProperties().add(organizer);
+
+			Attendee creator = new Attendee(mailURI);
 			creator.getParameters().add(Role.CHAIR);
-			creator.getParameters().add(new Cn(sakaiProxy.getUserDisplayName(event.getCreator())));
+			creator.getParameters().add(commonName);
 			vevent.getProperties().add(creator);
 		}
 		
@@ -318,7 +316,7 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 		calendar.getProperties().add(new ProdId("-//"+serverName+"//Sakai External Calendaring Service//EN"));
 		calendar.getProperties().add(Version.VERSION_2_0);
 		calendar.getProperties().add(CalScale.GREGORIAN);
-		
+		calendar.getProperties().add(Method.REQUEST);
 		return calendar;
 	}
 	
