@@ -111,11 +111,6 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 			Organizer organizer = new Organizer(mailURI);
 			organizer.getParameters().add(commonName);
 			vevent.getProperties().add(organizer);
-
-			Attendee creator = new Attendee(mailURI);
-			creator.getParameters().add(Role.CHAIR);
-			creator.getParameters().add(commonName);
-			vevent.getProperties().add(creator);
 		}
 		
 		//add attendees to event with 'required participant' role
