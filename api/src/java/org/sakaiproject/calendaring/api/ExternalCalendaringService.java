@@ -50,7 +50,7 @@ public interface ExternalCalendaringService {
 	 * 
 	 * @param extEvent  The ExtEvent to add the attendess too
 	 * @param attendees list of Users that have been invited to the event
-	 * @return
+	 * @return the ExtEvent for the given event or null if there was an error
 	 */
 	public ExtEvent addAttendeesToEvent(ExtEvent extEvent, List<User> attendees);
 	

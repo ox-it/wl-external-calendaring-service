@@ -141,7 +141,19 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 	 */
 	@Override
 	public ExtEvent addAttendeesToEvent(ExtEvent extEvent, List<User> attendees) {
+		return addAttendeesToEventWithRole(extEvent, attendees, Role.REQ_PARTICIPANT);
+	}
 
+	/**
+	 * Adds attendees to an existing event with a given role
+	 * Common logic for addAttendeesToEvent and addChairAttendeestoEvent
+	 *
+	 * @param extEvent  the ExtEvent to add the attendess too
+	 * @param attendees list of Users that have been invited to the event
+	 * @param role      the role with which to add each user
+	 * @return          the ExtEvent for the given event or null if there was an error
+	 */
+	protected ExtEvent addAttendeesToEventWithRole(ExtEvent extEvent, List<User> attendees, Role role) {
 		VEvent vevent = toVEvent(extEvent);
 		if(!isIcsEnabled()) {
 			log.debug("ExternalCalendaringService is disabled. Enable via calendar.ics.generation.enabled=true in sakai.properties");
@@ -152,7 +164,7 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 		if(attendees != null){
 			for(User u: attendees) {
 				Attendee a = new Attendee(URI.create("mailto:" + u.getEmail()));
-				a.getParameters().add(Role.REQ_PARTICIPANT);
+				a.getParameters().add(role);
 				a.getParameters().add(new Cn(u.getDisplayName()));
 			
 				vevent.getProperties().add(a);
