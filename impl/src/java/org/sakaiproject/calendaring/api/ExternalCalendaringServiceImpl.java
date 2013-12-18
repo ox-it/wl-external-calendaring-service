@@ -145,6 +145,14 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ExtEvent addChairAttendeesToEvent(ExtEvent extEvent, List<User> attendees) {
+		return addAttendeesToEventWithRole(extEvent, attendees, Role.CHAIR);
+	}
+
+	/**
 	 * Adds attendees to an existing event with a given role
 	 * Common logic for addAttendeesToEvent and addChairAttendeestoEvent
 	 *

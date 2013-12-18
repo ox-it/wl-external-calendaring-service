@@ -55,6 +55,16 @@ public interface ExternalCalendaringService {
 	public ExtEvent addAttendeesToEvent(ExtEvent extEvent, List<User> attendees);
 	
 	/**
+	 * Adds a list of attendees to an existing ExtEvent with the chair role.
+	 * This must then be turned into a Calendar before it can be turned into an ICS file.
+	 *
+	 * @param extEvent  The ExtEvent to add the attendess too
+	 * @param attendees list of Users that will chair the event
+	 * @return the ExtEvent for the given event or null if there was an error
+	 */
+	public ExtEvent addChairAttendeesToEvent(ExtEvent extEvent, List<User> attendees);
+	
+	/**
 	 * Set the status of an existing ExtEvent to cancelled.
 	 * This must then be turned into a Calendar before it can be turned into an ICS file.
 	 * 
