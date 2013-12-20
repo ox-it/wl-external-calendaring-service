@@ -50,9 +50,19 @@ public interface ExternalCalendaringService {
 	 * 
 	 * @param extEvent  The ExtEvent to add the attendess too
 	 * @param attendees list of Users that have been invited to the event
-	 * @return
+	 * @return the ExtEvent for the given event or null if there was an error
 	 */
 	public ExtEvent addAttendeesToEvent(ExtEvent extEvent, List<User> attendees);
+	
+	/**
+	 * Adds a list of attendees to an existing ExtEvent with the chair role.
+	 * This must then be turned into a Calendar before it can be turned into an ICS file.
+	 *
+	 * @param extEvent  The ExtEvent to add the attendess too
+	 * @param attendees list of Users that will chair the event
+	 * @return the ExtEvent for the given event or null if there was an error
+	 */
+	public ExtEvent addChairAttendeesToEvent(ExtEvent extEvent, List<User> attendees);
 	
 	/**
 	 * Set the status of an existing ExtEvent to cancelled.
@@ -70,6 +80,15 @@ public interface ExternalCalendaringService {
 	 * @return the Calendar for the given events or null if there was an error
 	 */
 	public ExtCalendar createCalendar(List<ExtEvent> events);
+	
+	/**
+	 * Creates an iCal calendar from a list of ExtEvents with a specified method.
+	 *
+	 * @param events iCal ExtEvents
+	 * @param method the ITIP method for the calendar, e.g. "REQUEST"
+	 * @return the Calendar for the given events or null if there was an error
+	 */
+	public ExtCalendar createCalendar(List<ExtEvent> events, String method);
 	
 	/**
 	 * Write an iCal calendar out to a file in the filesystem and return the path.
