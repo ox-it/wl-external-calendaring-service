@@ -199,7 +199,9 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 		}
 		// You can only have one status so make sure we remove any previous ones.
 		vevent.getProperties().removeAll(vevent.getProperties(Property.STATUS));
-		vevent.getProperties().add(new Status("CANCELLED"));
+		vevent.getProperties().add(Status.VEVENT_CANCELLED);
+		vevent.getProperties().removeAll(vevent.getProperties(Property.SEQUENCE));
+		vevent.getProperties().add(new Sequence("1"));
 		
 		if(log.isDebugEnabled()){
 			log.debug("VEvent cancelled:" + vevent);
