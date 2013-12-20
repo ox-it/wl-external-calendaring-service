@@ -82,6 +82,15 @@ public interface ExternalCalendaringService {
 	public ExtCalendar createCalendar(List<ExtEvent> events);
 	
 	/**
+	 * Creates an iCal calendar from a list of ExtEvents with a specified method.
+	 *
+	 * @param events iCal ExtEvents
+	 * @param method the ITIP method for the calendar, e.g. "REQUEST"
+	 * @return the Calendar for the given events or null if there was an error
+	 */
+	public ExtCalendar createCalendar(List<ExtEvent> events, String method);
+	
+	/**
 	 * Write an iCal calendar out to a file in the filesystem and return the path.
 	 * @param calendar iCal calendar object
 	 * @return the path to the file

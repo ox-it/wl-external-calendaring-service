@@ -214,6 +214,13 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 	 * {@inheritDoc}
 	 */@Override
 	public ExtCalendar createCalendar(List<ExtEvent> events) {
+		return createCalendar(events, null);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */@Override
+	public ExtCalendar createCalendar(List<ExtEvent> events, String method) {
 		
 		if(!isIcsEnabled()) {
 			log.debug("ExternalCalendaringService is disabled. Enable via calendar.ics.generation.enabled=true in sakai.properties");
@@ -221,7 +228,7 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 		}
 		
 		//setup calendar
-		Calendar calendar = setupCalendar();
+		Calendar calendar = setupCalendar(method);
 		
 		//null check
 		if(CollectionUtils.isEmpty(events)) {
@@ -322,7 +329,7 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 	 * Helper method to setup the standard parts of the calendar
 	 * @return
 	 */
-	private Calendar setupCalendar() {
+	private Calendar setupCalendar(String method) {
 		
 		String serverName = sakaiProxy.getServerName();
 		
@@ -331,7 +338,9 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 		calendar.getProperties().add(new ProdId("-//"+serverName+"//Sakai External Calendaring Service//EN"));
 		calendar.getProperties().add(Version.VERSION_2_0);
 		calendar.getProperties().add(CalScale.GREGORIAN);
-		calendar.getProperties().add(Method.REQUEST);
+		if (method != null) {
+			calendar.getProperties().add(new Method(method));
+		}
 		return calendar;
 	}
 	
