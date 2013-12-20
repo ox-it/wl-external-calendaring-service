@@ -23,7 +23,9 @@ import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.parameter.Cn;
+import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.parameter.Role;
+import net.fortuna.ical4j.model.parameter.Rsvp;
 import net.fortuna.ical4j.model.property.*;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -174,6 +176,8 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 				Attendee a = new Attendee(URI.create("mailto:" + u.getEmail()));
 				a.getParameters().add(role);
 				a.getParameters().add(new Cn(u.getDisplayName()));
+				a.getParameters().add(PartStat.ACCEPTED);
+				a.getParameters().add(Rsvp.FALSE);
 			
 				vevent.getProperties().add(a);
 			}
