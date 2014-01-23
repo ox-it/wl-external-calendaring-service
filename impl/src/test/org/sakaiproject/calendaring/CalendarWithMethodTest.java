@@ -67,6 +67,16 @@ public class CalendarWithMethodTest {
         Assert.assertNotNull(applicationContext.getBean("org.sakaiproject.calendaring.api.ExternalCalendaringService"));
     }
 
+    /**
+     * A calendar with REQUEST method is not valid if it has no attendees
+     */
+    @Test(expected=ValidationException.class)
+    public void testRequestCalendarWithoutAttendees() {
+        CalendarEvent event = generateEvent();
+        ExtEvent extEvent = service.createEvent(event);
+        ExtCalendar extCalendar = service.createCalendar(Collections.singletonList(extEvent), "REQUEST");
+    }
+
     private CalendarEventEdit generateEvent(List<ical4j>) {
 
         MockCalendarEventEdit edit = new MockCalendarEventEdit();
