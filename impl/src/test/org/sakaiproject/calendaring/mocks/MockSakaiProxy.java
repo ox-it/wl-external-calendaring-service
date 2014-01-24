@@ -10,7 +10,8 @@ import org.sakaiproject.calendaring.logic.SakaiProxy;
  */
 public class MockSakaiProxy implements SakaiProxy {
 
-	
+	public static final String NO_EMAIL_ID = "noEmailPlease";
+
 	@Override
 	public String getCurrentUserId() {
 		return "abc123";
@@ -33,7 +34,7 @@ public class MockSakaiProxy implements SakaiProxy {
 
 	@Override
 	public String getUserEmail(String uuid) {
-		return uuid + "@email.com";
+		return uuid.equals(NO_EMAIL_ID) ? "" : uuid + "@email.com";
 	}
 
 	@Override

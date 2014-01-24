@@ -1,8 +1,6 @@
 package org.sakaiproject.calendaring;
 
-import net.fortuna.ical4j.model.ValidationException;
-import net.fortuna.ical4j.model.property.CalScale;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.component.VEvent;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +9,7 @@ import org.sakaiproject.calendar.api.CalendarEvent;
 import org.sakaiproject.calendar.api.CalendarEventEdit;
 import org.sakaiproject.calendaring.api.*;
 import org.sakaiproject.calendaring.mocks.MockCalendarEventEdit;
+import org.sakaiproject.calendaring.mocks.MockSakaiProxy;
 import org.sakaiproject.calendaring.mocks.MockTimeService;
 import org.sakaiproject.time.api.Time;
 import org.sakaiproject.time.api.TimeRange;
@@ -22,11 +21,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Test the changes to implement REQUEST and CANCEL methods
@@ -44,19 +43,20 @@ public class CalendarWithMethodTest {
     private final String CREATOR = "steve";
     private final long START_TIME = 1336136400; // 4/May/2012 13:00 GMT
     private final long END_TIME = 1336140000; // 4/May/2012 14:00 GMT
+    
+    private List<User> users;
+    
     //for the test classes we can still use annotation based injection
     @Resource(name = "org.sakaiproject.calendaring.api.ExternalCalendaringService")
     private ExternalCalendaringService service;
     @Autowired
     private ApplicationContext applicationContext;
-    private List<User> users;
-
+    
     @Before
     public void setupData() {
         users = new ArrayList<User>();
-        for (int i = 0; i < 5; i++) {
-            org.sakaiproject.mock.domain.User u = new org.sakaiproject.mock.domain.User(null, "user" + i, "user" + i, "user" + i, "user" + i + "@email.com", "User", String.valueOf(i),
-                    null, null, null, null, null, null, null, null, null, null);
+        for(int i=0;i<5;i++) {
+            org.sakaiproject.mock.domain.User u = new org.sakaiproject.mock.domain.User(null, "user"+i, "user"+i, "user"+i, "user"+i+"@email.com", "User", String.valueOf(i), null, null, null, null, null,null,null,null,null,null);
             users.add(u);
         }
     }
@@ -70,14 +70,56 @@ public class CalendarWithMethodTest {
     /**
      * A calendar with REQUEST method is not valid if it has no attendees
      */
-    @Test(expected=ValidationException.class)
+    @Test
     public void testRequestCalendarWithoutAttendees() {
-        CalendarEvent event = generateEvent();
-        ExtEvent extEvent = service.createEvent(event);
+        ExtEvent extEvent = generateExtEvent();
         ExtCalendar extCalendar = service.createCalendar(Collections.singletonList(extEvent), "REQUEST");
+        assertNull(extCalendar);
     }
 
-    private CalendarEventEdit generateEvent(List<ical4j>) {
+    @Test
+    public void testRequestCalendarWithAttendees() {
+        ExtEvent extEvent = generateExtEvent();
+        service.addChairAttendeesToEvent(extEvent, users);
+        ExtCalendar extCalendar = service.createCalendar(Collections.singletonList(extEvent), "REQUEST");
+        assertNotNull(extCalendar);
+    }
+
+    @Test
+    public void testRequestCalendarWithAttendeesWithoutEmails() {
+        ExtEvent extEvent = generateExtEvent();
+        User noEmailUser = mock(User.class);
+        when(noEmailUser.getEmail()).thenReturn("");
+        service.addChairAttendeesToEvent(extEvent, Collections.singletonList(noEmailUser));
+        ExtCalendar extCalendar = service.createCalendar(Collections.singletonList(extEvent), "REQUEST");
+        assertNotNull(extCalendar);
+    }
+
+    private ExtEvent generateExtEvent() {
+        CalendarEvent event = generateEvent(CREATOR);
+        return service.createEvent(event);
+    }
+
+    @Test
+    public void testEventWithOrganizer() {
+        CalendarEvent event = generateEvent("fred");
+        VEvent vEvent = getVEvent(event);
+        String creatorEmail = new MockSakaiProxy().getUserEmail("fred");
+        assertEquals(vEvent.getOrganizer().getValue(), "mailto:" + creatorEmail);
+    }
+
+    @Test
+    public void testEventWithOrganizerWithoutEmailAddress() {
+        CalendarEvent event = generateEvent(MockSakaiProxy.NO_EMAIL_ID);
+        VEvent vEvent = getVEvent(event);
+        assertNull(vEvent.getOrganizer());
+    }
+
+    private VEvent getVEvent(CalendarEvent event) {
+        return ((ExtEventImpl) service.createEvent(event)).getvEvent();
+    }
+
+    private CalendarEventEdit generateEvent(String creatorId) {
 
         MockCalendarEventEdit edit = new MockCalendarEventEdit();
 
@@ -85,7 +127,7 @@ public class CalendarWithMethodTest {
         edit.setLocation(LOCATION);
         edit.setDescription(DESCRIPTION);
         edit.setId(UUID.randomUUID().toString());
-        edit.setCreator(CREATOR);
+        edit.setCreator(creatorId);
 
         TimeService timeService = new MockTimeService();
         Time start = timeService.newTime(START_TIME);
@@ -95,6 +137,6 @@ public class CalendarWithMethodTest {
         edit.setRange(timeRange);
 
         return edit;
-    }
 
+    }
 }
