@@ -1,5 +1,6 @@
 package org.sakaiproject.calendaring;
 
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import org.junit.Assert;
 import org.junit.Before;
@@ -95,8 +96,20 @@ public class CalendarWithMethodTest {
         assertNotNull(extCalendar);
     }
 
+    @Test
+    public void testCanDefineEventSequence() {
+        ExtEvent extEvent = generateExtEventWithSequence("101");
+        assertEquals("101", getVEvent(extEvent).getProperty(Property.SEQUENCE));
+    }
+
     private ExtEvent generateExtEvent() {
         CalendarEvent event = generateEvent(CREATOR);
+        return service.createEvent(event);
+    }
+
+    private ExtEvent generateExtEventWithSequence(String sequenceNumber) {
+        CalendarEventEdit event = generateEvent(CREATOR);
+        event.setField("vevent_sequence", sequenceNumber);
         return service.createEvent(event);
     }
 
@@ -116,7 +129,11 @@ public class CalendarWithMethodTest {
     }
 
     private VEvent getVEvent(CalendarEvent event) {
-        return ((ExtEventImpl) service.createEvent(event)).getvEvent();
+        return getVEvent(service.createEvent(event));
+    }
+
+    private VEvent getVEvent(ExtEvent extEvent) {
+        return ((ExtEventImpl) extEvent).getvEvent();
     }
 
     private CalendarEventEdit generateEvent(String creatorId) {
