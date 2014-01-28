@@ -102,6 +102,18 @@ public class CalendarWithMethodTest {
         assertEquals("101", getVEvent(extEvent).getProperty(Property.SEQUENCE));
     }
 
+    /**
+     * For a cancel calendar to be valid all events must have sequence defined.
+     * I expect the service to adjust for this in #cancelEvent().
+     */
+    @Test
+         public void testCancelCalendarStillWorksWithoutSequence() {
+        ExtEvent extEvent = generateExtEvent();
+        service.cancelEvent(extEvent);
+        ExtCalendar extCalendar = service.createCalendar(Collections.singletonList(extEvent), "CANCEL");
+        assertNotNull(extCalendar);
+    }
+
     private ExtEvent generateExtEvent() {
         CalendarEvent event = generateEvent(CREATOR);
         return service.createEvent(event);
