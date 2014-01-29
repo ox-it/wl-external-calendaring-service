@@ -99,7 +99,7 @@ public class CalendarWithMethodTest {
     @Test
     public void testCanDefineEventSequence() {
         ExtEvent extEvent = generateExtEventWithSequence("101");
-        assertEquals("101", getVEvent(extEvent).getProperty(Property.SEQUENCE));
+        assertEquals("101", getVEvent(extEvent).getProperty(Property.SEQUENCE).getValue());
     }
 
     /**
