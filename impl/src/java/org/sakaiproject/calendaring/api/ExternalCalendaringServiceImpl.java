@@ -111,7 +111,7 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 			String creatorEmail = sakaiProxy.getUserEmail(event.getCreator());
 
 			if (creatorEmail != null && !creatorEmail.isEmpty()) {
-				URI mailURI = URI.create("mailto:" + creatorEmail);
+				URI mailURI = createMailURI(creatorEmail);
 				Cn commonName = new Cn(sakaiProxy.getUserDisplayName(event.getCreator()));
 
 				Organizer organizer = new Organizer(mailURI);
@@ -178,7 +178,7 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 		//add attendees to event with 'required participant' role
 		if(attendees != null){
 			for(User u: attendees) {
-				Attendee a = new Attendee(URI.create("mailto:" + u.getEmail()));
+				Attendee a = new Attendee(createMailURI(u.getEmail()));
 				a.getParameters().add(role);
 				a.getParameters().add(new Cn(u.getDisplayName()));
 				a.getParameters().add(PartStat.ACCEPTED);
@@ -209,9 +209,12 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 		// You can only have one status so make sure we remove any previous ones.
 		vevent.getProperties().removeAll(vevent.getProperties(Property.STATUS));
 		vevent.getProperties().add(Status.VEVENT_CANCELLED);
-		vevent.getProperties().removeAll(vevent.getProperties(Property.SEQUENCE));
-		vevent.getProperties().add(new Sequence("1"));
-		
+
+		// Must define a sequence for cancellations. If one was not defined when the event was created use 1
+		if (vevent.getProperties().getProperty(Property.SEQUENCE) == null) {
+			vevent.getProperties().add(new Sequence("1"));
+		}
+
 		if(log.isDebugEnabled()){
 			log.debug("VEvent cancelled:" + vevent);
 		}
@@ -415,7 +418,15 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 		sb.append(".ics");
 		return sb.toString();
 	}
-	
+
+	private URI createMailURI(String email) {
+		if (email == null || email.isEmpty()) {
+			return URI.create("noemail");
+		} else {
+			return URI.create("mailto:" + email);
+		}
+	}
+
 	/**
 	 * init
 	 */
