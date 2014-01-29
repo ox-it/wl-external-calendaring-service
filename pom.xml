@@ -8,7 +8,7 @@
 	<artifactId>external-calendaring-service</artifactId>
 	
 	<packaging>pom</packaging>
-	<version>1.0.6ox5-SNAPSHOT</version>
+	<version>1.0.6ox5</version>
 	
 	<parent>
 		<groupId>org.sakaiproject.purepoms</groupId>
