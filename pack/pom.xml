@@ -9,7 +9,7 @@
 	<parent>
     	<artifactId>external-calendaring-service</artifactId>
     	<groupId>org.sakaiproject.calendaring</groupId>
-    	<version>1.0.6ox6-SNAPSHOT</version>
+    	<version>1.0.6ox6</version>
   	</parent>
 	
 	<packaging>sakai-component</packaging>
