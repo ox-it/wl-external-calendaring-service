@@ -110,14 +110,12 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 
 			String creatorEmail = sakaiProxy.getUserEmail(event.getCreator());
 
-			if (creatorEmail != null && !creatorEmail.isEmpty()) {
-				URI mailURI = createMailURI(creatorEmail);
-				Cn commonName = new Cn(sakaiProxy.getUserDisplayName(event.getCreator()));
+			URI mailURI = createMailURI(creatorEmail);
+			Cn commonName = new Cn(sakaiProxy.getUserDisplayName(event.getCreator()));
 
-				Organizer organizer = new Organizer(mailURI);
-				organizer.getParameters().add(commonName);
-				vevent.getProperties().add(organizer);
-			}
+			Organizer organizer = new Organizer(mailURI);
+			organizer.getParameters().add(commonName);
+			vevent.getProperties().add(organizer);
 		}
 		
 		//add attendees to event with 'required participant' role
