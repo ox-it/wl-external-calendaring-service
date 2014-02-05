@@ -110,14 +110,12 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 
 			String creatorEmail = sakaiProxy.getUserEmail(event.getCreator());
 
-			if (creatorEmail != null && !creatorEmail.isEmpty()) {
-				URI mailURI = createMailURI(creatorEmail);
-				Cn commonName = new Cn(sakaiProxy.getUserDisplayName(event.getCreator()));
+			URI mailURI = createMailURI(creatorEmail);
+			Cn commonName = new Cn(sakaiProxy.getUserDisplayName(event.getCreator()));
 
-				Organizer organizer = new Organizer(mailURI);
-				organizer.getParameters().add(commonName);
-				vevent.getProperties().add(organizer);
-			}
+			Organizer organizer = new Organizer(mailURI);
+			organizer.getParameters().add(commonName);
+			vevent.getProperties().add(organizer);
 		}
 		
 		//add attendees to event with 'required participant' role
@@ -419,6 +417,11 @@ public class ExternalCalendaringServiceImpl implements ExternalCalendaringServic
 		return sb.toString();
 	}
 
+	/**
+	 * Create a URI to be used for a person's email address that degrades nicely if one is not defined
+	 * @param email The email address as a string, can be empty or even <code>null</code>
+	 * @return the URI object
+	 */
 	private URI createMailURI(String email) {
 		if (email == null || email.isEmpty()) {
 			return URI.create("noemail");

@@ -137,7 +137,7 @@ public class CalendarWithMethodTest {
     public void testEventWithOrganizerWithoutEmailAddress() {
         CalendarEvent event = generateEvent(MockSakaiProxy.NO_EMAIL_ID);
         VEvent vEvent = getVEvent(event);
-        assertNull(vEvent.getOrganizer());
+        assertNotNull(vEvent.getOrganizer());
     }
 
     private VEvent getVEvent(CalendarEvent event) {
